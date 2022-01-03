@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class MoveTest : MonoBehaviour
 {
-    Vector3 target = new Vector3(0, 5, 70);
+    Vector3 target = new Vector3(10, 0, 70);
 
     // Update is called once per frame
     void Update()
