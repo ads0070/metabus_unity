@@ -1,23 +1,37 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
+using System.Collections.Generic;
+using System.Collections;
 
 public class MoveTest : MonoBehaviour
 {
-    Vector3 target = new Vector3(10, 0, 70);
 
-    // Update is called once per frame
-    void Update()
-    {
-        //1.MoveTowards
-        /*transform.position =
-            Vector3.MoveTowards(transform.position, target, 1f);*/
+	public float speed;
+	float hAxis;
+	float vAxis;
+	bool rDown;
 
-        //2.SmoothDamp
-        Vector3 velo = Vector3.zero;
+	Vector3 moveVec;
+	Animator anim;
 
-        transform.position =
-            Vector3.SmoothDamp(transform.position, target, ref velo, 0.5f);
+	void Awake()
+	{
+		anim = GetComponentInChildren<Animator>();
+	}
 
-    }
+	void Update()
+	{
+		hAxis = Input.GetAxisRaw("Horizontal");
+		vAxis = Input.GetAxisRaw("Vertical");
+		rDown = Input.GetButton("Run");
+
+		moveVec = new Vector3(hAxis, 0, vAxis).normalized;
+
+		transform.position += moveVec * speed * Time.deltaTime;
+
+		anim.SetBool("isWalk", moveVec != Vector3.zero);
+		anim.SetBool("isRun", rDown);
+
+		transform.LookAt(transform.position + moveVec);
+
+	}
 }
