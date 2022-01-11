@@ -12,6 +12,7 @@ public class UserMove : MonoBehaviour
 	public Transform centralAxis;
 
 	Vector3 moveVec;
+	Vector3 newDirection;
 	Animator anim;
 
 	void Awake()
@@ -26,7 +27,8 @@ public class UserMove : MonoBehaviour
 
 		moveVec = new Vector3(h, 0, v).normalized;
 
-		Debug.Log(centralAxis.transform.eulerAngles);
+		var quaternion = Quaternion.Euler(0, centralAxis.transform.eulerAngles.y, 0);
+		newDirection = quaternion * moveVec;
 
 		if (moveVec != Vector3.zero)
         {
@@ -49,9 +51,9 @@ public class UserMove : MonoBehaviour
 			anim.SetBool("isWalk", false);
 		}
 
-		transform.position += moveVec * speed * Time.deltaTime;
+		transform.position += newDirection * speed * Time.deltaTime;
 
-		transform.LookAt(transform.position + moveVec);
+		transform.LookAt(transform.position + newDirection);
 
 		centralAxis.position = transform.position;
 	}
