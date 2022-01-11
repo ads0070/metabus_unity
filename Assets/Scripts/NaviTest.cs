@@ -43,7 +43,6 @@ public class NaviTest : MonoBehaviour
     private void Update()
     {
         pos = target.transform.position;
-        Debug.Log(pos);
 
         if (pos.z <= 365 && 335 <= pos.z && pos.x <= 15 && -15 <= pos.x)
         {

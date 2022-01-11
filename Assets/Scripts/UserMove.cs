@@ -10,6 +10,7 @@ public class UserMove : MonoBehaviour
 	private float h;
 	public bl_Joystick Joystick;
 	public Transform centralAxis;
+	bool isBorder;
 
 	Vector3 moveVec;
 	Vector3 newDirection;
@@ -20,7 +21,17 @@ public class UserMove : MonoBehaviour
 		anim = GetComponentInChildren<Animator>();
 	}
 
-	void Update()
+	void StopToWall()
+	{
+		isBorder = Physics.Raycast(transform.position, transform.forward, 5, LayerMask.GetMask("Map"));
+	}
+
+	void FixedUpdate()
+    {
+		StopToWall();
+    }
+
+    void Update()
 	{
 		v = Joystick.Vertical;
 		h = Joystick.Horizontal;
@@ -50,8 +61,10 @@ public class UserMove : MonoBehaviour
 			anim.SetBool("isRun", false);
 			anim.SetBool("isWalk", false);
 		}
-
-		transform.position += newDirection * speed * Time.deltaTime;
+		if (!isBorder)
+		{
+			transform.position += newDirection * speed * Time.deltaTime;
+		}
 
 		transform.LookAt(transform.position + newDirection);
 
