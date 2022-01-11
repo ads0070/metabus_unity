@@ -5,10 +5,11 @@ using System.Collections;
 public class UserMove : MonoBehaviour
 {
 
-	public float speed;
-	public float v;
-	public float h;
-	public bl_Joystick Joystick;//Joystick reference for assign in inspector
+	private float speed;
+	private float v;
+	private float h;
+	public bl_Joystick Joystick;
+	public Transform centralAxis;
 
 	Vector3 moveVec;
 	Animator anim;
@@ -20,12 +21,12 @@ public class UserMove : MonoBehaviour
 
 	void Update()
 	{
-		v = Joystick.Vertical; //get the vertical value of joystick
-		h = Joystick.Horizontal; //get the horizontal value of joystick
+		v = Joystick.Vertical;
+		h = Joystick.Horizontal;
 
 		moveVec = new Vector3(h, 0, v).normalized;
 
-		transform.position += moveVec * speed * Time.deltaTime;
+		Debug.Log(centralAxis.transform.eulerAngles);
 
 		if (moveVec != Vector3.zero)
         {
@@ -47,9 +48,11 @@ public class UserMove : MonoBehaviour
 			anim.SetBool("isRun", false);
 			anim.SetBool("isWalk", false);
 		}
-		
+
+		transform.position += moveVec * speed * Time.deltaTime;
 
 		transform.LookAt(transform.position + moveVec);
 
+		centralAxis.position = transform.position;
 	}
 }

@@ -1,44 +1,46 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.EventSystems;
 
-public class CameraMove : MonoBehaviour
+public class CameraMove : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
 {
     public Transform centralAxis;
     public Transform target;
-    public Vector3 offset;
+    private bool isBtnDown = false;
+    private float roX;
 
-    public float camSpeed = 10f;
+    private float camSpeed = 3f;
     float mouseX;
     float mouseY;
     int deviceWidth = Screen.width;
 
-    void CamMove()
+    public void OnPointerDown(PointerEventData eventData)
     {
-        if (Input.GetMouseButton(0))
-        {
-            if (deviceWidth/2 < Input.mousePosition.x)
-            {
-                mouseX += Input.GetAxis("Mouse X");
-                mouseY += Input.GetAxis("Mouse Y") * -1;
-
-                centralAxis.rotation = Quaternion.Euler(
-                    new Vector3(
-                        centralAxis.rotation.x + mouseY,
-                        centralAxis.rotation.y + mouseX,
-                        0) * camSpeed);
-            }
-        }
+        isBtnDown = true;
     }
 
-    void CamFollow()
+    public void OnPointerUp(PointerEventData eventData)
     {
-        centralAxis.position = target.position;
+        isBtnDown = false;
     }
 
     void Update()
     {
-        CamMove();
-        CamFollow();
+        if (isBtnDown)
+        {
+            mouseX += Input.GetAxis("Mouse X");
+            mouseY += Input.GetAxis("Mouse Y") * -1;
+
+            if (centralAxis.rotation.x + mouseY <= -5) roX = -5;
+            else if (centralAxis.rotation.x + mouseY > 7) roX = 7;
+            else roX = centralAxis.rotation.x + mouseY;
+
+            centralAxis.rotation = Quaternion.Euler(
+                new Vector3(
+                    roX,
+                    centralAxis.rotation.y + mouseX,
+                    0) * camSpeed);
+        }
     }
 }
