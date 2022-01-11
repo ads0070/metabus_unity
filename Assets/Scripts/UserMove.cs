@@ -10,6 +10,8 @@ public class UserMove : MonoBehaviour
     private float h;
     public bl_Joystick Joystick;
     public Transform centralAxis;
+    private Rigidbody rigidbody;
+    bool isBorder;
 
     Vector3 moveVec;
     Animator anim;
@@ -17,6 +19,17 @@ public class UserMove : MonoBehaviour
     void Awake()
     {
         anim = GetComponentInChildren<Animator>();
+    }
+
+    void StopToWall()
+    {
+        Debug.DrawRay(transform.position, transform.forward * 5, Color.green);
+        isBorder = Physics.Raycast(transform.position, transform.forward, 5, LayerMask.GetMask("Wall_1"));
+    }
+
+    void FixedUpdate()
+    {
+        StopToWall();
     }
 
     void Update()
@@ -49,10 +62,16 @@ public class UserMove : MonoBehaviour
             anim.SetBool("isWalk", false);
         }
 
-        transform.position += moveVec * speed * Time.deltaTime;
+        if (!isBorder)
+        {
+            transform.position += moveVec * speed * Time.deltaTime;
+
+        }
 
         transform.LookAt(transform.position + moveVec);
 
         centralAxis.position = transform.position;
+
     }
+
 }
